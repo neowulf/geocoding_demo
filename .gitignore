@@ -105,3 +105,7 @@ venv.bak/
 # mypy
 .mypy_cache/
 
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/atlassian-ide-plugin.xml
+.idea/sbt.xml
