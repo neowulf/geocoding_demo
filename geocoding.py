@@ -22,16 +22,15 @@ class GeocodingContext:
 
 class GeocodingStrategy():
 
+    def __init__(self, provider):
+        self.provider = provider
+
     @abc.abstractmethod
     def reverse_geocode(self, lat, long):
         pass
 
     @abc.abstractmethod
     def extract_address(self, json_response):
-        pass
-
-    @abc.abstractmethod
-    def decorate_result(self, result):
         pass
 
     def invoke_api(self, url, query_dict):
@@ -42,6 +41,12 @@ class GeocodingStrategy():
             json_response = json.loads(html)
         return json_response
 
+    def decorate_result(self, result):
+        return {
+            'provider': self.provider,
+            'result': result
+        }
+
 
 class GeocodingStrategyHereApi(GeocodingStrategy):
     """
@@ -51,23 +56,18 @@ class GeocodingStrategyHereApi(GeocodingStrategy):
     def __init__(self, app_id=None, app_code=None):
         self.app_id = app_id
         self.app_code = app_code
+        super().__init__('Google')
 
         try:
             if self.app_id is None or self.app_code is None:
                 config = configparser.ConfigParser()
                 config.read('config.ini')
-                here_config = config['Here']
+                here_config = config[self.provider]
                 self.app_id = here_config['app_id']
                 self.app_code = here_config['app_code']
         except:
             # TODO logging
             print('Please provide api secrets via config.ini or programmatically.')
-
-    def decorate_result(self, result):
-        return {
-            'provider': 'here',
-            'result': result
-        }
 
     def reverse_geocode(self, lat, long):
         reverse_geocode_url = "https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json"
@@ -94,23 +94,18 @@ class GeocodingStrategyHereApi(GeocodingStrategy):
 class GeocodingStrategyGoogleApi(GeocodingStrategy):
 
     def __init__(self, app_key=None):
+        self.provider = 'Google'
         self.app_key = app_key
 
         try:
             if self.app_key is None:
                 config = configparser.ConfigParser()
                 config.read('config.ini')
-                here_config = config['Google']
-                self.app_key = here_config['app_key']
+                google_config = config[self.provider]
+                self.app_key = google_config['app_key']
         except:
             # TODO logging
             print('Please provide api secrets via config.ini or programmatically.')
-
-    def decorate_result(self, result):
-        return {
-            'provider': 'google',
-            'result': result
-        }
 
     def reverse_geocode(self, lat, long):
         reverse_geocode_url = 'https://maps.googleapis.com/maps/api/geocode/json'

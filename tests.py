@@ -7,10 +7,13 @@ class GeocodingTest(unittest.TestCase):
 
     def fixture(self, context):
         result = context.first_address_match("41.8842", "-87.6388")
-        if result['provider'] == 'google':
-            self.assertTrue(result, ['425 W Randolph St, Chicago, IL 60606, USA'])
-        elif result['provider'] == 'here':
-            self.assertTrue(result, ['425 W Randolph St, Chicago, IL 60606, United States'])
+        print(result)
+        if result['provider'] == 'Google':
+            self.assertTrue(result['result'], ['425 W Randolph St, Chicago, IL 60606, USA'])
+        elif result['provider'] == 'Here':
+            self.assertTrue(result['result'], ['425 W Randolph St, Chicago, IL 60606, United States'])
+        else:
+            raise Exception('Fix fixture!')
 
     def test_here_api(self):
         here_api = GeocodingStrategyHereApi()
