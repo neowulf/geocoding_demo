@@ -24,6 +24,7 @@ class GeocodingStrategy():
 
     def __init__(self, provider):
         self.provider = provider
+        self.config = self.read_config()
 
     @abc.abstractmethod
     def reverse_geocode(self, lat, long):
@@ -47,6 +48,11 @@ class GeocodingStrategy():
             'result': result
         }
 
+    def read_config(self):
+        config = configparser.ConfigParser()
+        config.read('config.ini')
+        return config[self.provider]
+
 
 class GeocodingStrategyHereApi(GeocodingStrategy):
     """
@@ -54,17 +60,14 @@ class GeocodingStrategyHereApi(GeocodingStrategy):
     """
 
     def __init__(self, app_id=None, app_code=None):
+        super().__init__('Here')
         self.app_id = app_id
         self.app_code = app_code
-        super().__init__('Google')
 
         try:
             if self.app_id is None or self.app_code is None:
-                config = configparser.ConfigParser()
-                config.read('config.ini')
-                here_config = config[self.provider]
-                self.app_id = here_config['app_id']
-                self.app_code = here_config['app_code']
+                self.app_id = self.config['app_id']
+                self.app_code = self.config['app_code']
         except:
             # TODO logging
             print('Please provide api secrets via config.ini or programmatically.')
@@ -94,15 +97,12 @@ class GeocodingStrategyHereApi(GeocodingStrategy):
 class GeocodingStrategyGoogleApi(GeocodingStrategy):
 
     def __init__(self, app_key=None):
-        self.provider = 'Google'
+        super().__init__('Google')
         self.app_key = app_key
 
         try:
             if self.app_key is None:
-                config = configparser.ConfigParser()
-                config.read('config.ini')
-                google_config = config[self.provider]
-                self.app_key = google_config['app_key']
+                self.app_key = self.config['app_key']
         except:
             # TODO logging
             print('Please provide api secrets via config.ini or programmatically.')
