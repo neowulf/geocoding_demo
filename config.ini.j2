@@ -1,0 +1,28 @@
+[Here]
+app_id = {{ here_app_id }}
+app_code = {{ here_app_code }}
+
+; https://developer.here.com/projects/PROD-fc59f064-b10b-4a4d-b69b-086d4e4e594b
+; curl -s 'https://reverse.geocoder.cit.api.here.com/6.2/reversegeocode.json?app_id={{ here_app_id }}&app_code={{ here_app_code }}&mode=retrieveAddresses&prox=41.8842,-87.6388,250'
+
+; jq .Response.View[].Result[].Location.Address.Label
+; "Distance",
+;           "Location",
+;           "MatchLevel",
+;           "MatchQuality",
+;           "MatchType",
+;           "Relevance"
+
+[Google]
+app_key =  {{ google_app_key }}
+
+; https://console.developers.google.com/apis/credentials?project=geocodingdemo-196419
+; associated with first@last.com
+
+; curl -s 'https://maps.googleapis.com/maps/api/geocode/json?latlng=41.8841375,-87.6388423&key={{ google_app_key }}'
+; | jq .results[].formatted_address
+;   "address_components",
+;           "formatted_address",
+;           "geometry",
+;           "place_id",
+;           "types"

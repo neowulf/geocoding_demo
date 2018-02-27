@@ -73,11 +73,15 @@ class GeocodeHttpRequestHandler(BaseHTTPRequestHandler):
         return http_path, query_params
 
 
-def run(server_class=HTTPServer, handler_class=GeocodeHttpRequestHandler):
-    server_address = ('', 8000)
+def run(port, server_class=HTTPServer, handler_class=GeocodeHttpRequestHandler):
+    server_address = ('', port)
     httpd = server_class(server_address, handler_class)
     httpd.serve_forever()
 
 
 if __name__ == '__main__':
-    run()
+    # optparse library to get the port from the command line?
+    port = 8000
+    print('Starting server on port %d' % port)
+
+    run(port)

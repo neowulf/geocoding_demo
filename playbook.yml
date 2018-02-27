@@ -1,0 +1,23 @@
+---
+- name: 'Setup docker image'
+  hosts: 127.0.0.1
+  connection: local
+  vars_files:
+    - playbook_vars_vault.yml
+  vars:
+    - config_file: '{{ playbook_dir }}/config.ini'
+  tasks:
+    - block:
+        - name: "Populate {{ config_file }}"
+          template:
+            src: "{{ config_file }}.j2"
+            dest: "{{ config_file }}"
+
+        - name: Build docker image
+          docker_image:
+            name: geocoding/demo
+            path: '{{ playbook_dir }}'
+
+      always:
+        - name: "delete decrypted config_file"
+          file: path="{{ config_file }}" state=absent

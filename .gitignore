@@ -109,3 +109,5 @@ venv.bak/
 .idea/tasks.xml
 .idea/atlassian-ide-plugin.xml
 .idea/sbt.xml
+
+playbook.retry

@@ -47,8 +47,16 @@ python driver.py
 ./tests.sh
 ```
 
-### Docker Invocation
-TODO
+### Deployment Steps
+
+```bash
+ansible-playbook --ask-vault-pass playbook.yml
+docker run -d -p 8000:8000 geocoding/demo
+./tests.sh localhost:8000
+
+# docker container ls -a -q | xargs docker container rm -f
+# docker image rmi 1acbaaf91df3 2475ca1dcbac
+```
 
 ## Design
 
@@ -65,4 +73,6 @@ TODO
 1. Google provider is the fallback provider.
 1. Google api - provides the first found `street_address`.
 1. Here api - provides the first found `houseNumber`.
- 
+1. `config.ini.template` is a template file which will eventually reside as `config.ini`. where the real secrets need 
+    to be filled for the different providers. 
+    1. `ansible` stores the actual `config.ini` as a secret file.
