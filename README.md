@@ -22,37 +22,38 @@
 
 ## Build and Deployment
 
-1. [Optional Step] - Run the following steps within the vagrant instance.
-```bash
-vagrant plugin install vagrant-vbguest
-vagrant up
-vagrant ssh
-
-# FIXME make the following two sentences part of the Vagrantfile
-bash miniconda.sh -b || exit 1;
-PATH="${HOME}/miniconda3/bin:$PATH"
-
-cd /vagrant
-```
+1. [Optional Step] - Setup environment:
+    ```bash
+    vagrant plugin install vagrant-vbguest
+    vagrant up
+    vagrant ssh
+    
+    # FIXME make the following two sentences part of the Vagrantfile
+    bash miniconda.sh -b
+    PATH="${HOME}/miniconda3/bin:$PATH"
+    
+    cd /vagrant
+    ```
 1. Setup the conda environment:
-```bash
-conda env create -f conda_environment.yml
-source activate geocoding_demo
-```
+    ```bash
+    conda env create -f conda_environment.yml
+    source activate geocoding_demo
+    ```
 1. Build the docker image.
-```bash
-ansible-playbook --ask-vault-pass playbook.yml
-```
-1. The docker image would be created if the unit tests succeed without any failure.
+    ```bash
+    ansible-playbook --ask-vault-pass playbook.yml
+    ```
+1. Provide the ansible vault password.
+1. The docker image will only get created if the unit tests succeed without any failure.
 1. Run the docker image.
-```bash
-docker run -d -p 8000:8000 geocoding/demo
-```
+    ```bash
+    docker run -d -p 8000:8000 geocoding/demo
+    ```
 1. The server should be running in the background. 
 1. Execute the following to test the http server:
-```bash
-./tests.sh http://localhost:8000
-```
+    ```bash
+    ./tests.sh http://localhost:8000
+    ```
 
 ## Usage
 
