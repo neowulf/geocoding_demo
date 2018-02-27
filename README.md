@@ -50,7 +50,7 @@
     docker run -d -p 8000:8000 geocoding/demo
     ```
 1. The server should be running in the background. 
-1. Execute the following to test the http server:
+1. Execute the following sanity tests to check the http server:
     ```bash
     ./tests.sh http://localhost:8000
     ```
@@ -88,16 +88,21 @@ python -m unittest tests
 
 ## Assumptions
 
-1. The following tools are available on the host machine:
-    1. conda
-    1. docker
-    1. bash
-    1. curl
-    1. jq
-1. Google provider is the fallback provider. This could have been extracted into the `config.ini`.
-1. Google api - provides the first `street_address` match.
-1. Here api - provides the first `houseNumber` match.
+1. The server code doesn't have any dependencies other than Python3 standard libraries.
+1. However, there are some tools that will be needed on the host machine for the following purposes:
+    1. Build / Deployment
+        1. `conda`
+        1. `docker`
+    1. Sanity Tests (to check if the http server is properly running)
+        1. `bash`
+        1. `curl`
+        1. `jq`
 1. `config.ini.j2` is a jinja file which will eventually reside as `config.ini` where the real secrets need 
     to be filled for the different providers. 
     1. `ansible` provides the `config.ini` when building the docker image.
     1. If the `config.ini` is missing or incorrect - the docker image won't be built due to failing tests.
+1. Google provider is the fallback provider (the default provider could have been defined in the `config.ini`).
+1. Backend provider api usage
+    1. Google api - provides the first `street_address` match found in the google api's json response.
+    1. Here api - provides the first `houseNumber` match found in the here api's json response.
+1. The sample json responses can be found in the `mock` folder.
