@@ -6,5 +6,3 @@ ADD config.ini /
 EXPOSE 8000
 
 CMD [ "python", "./driver.py" ]
-
-

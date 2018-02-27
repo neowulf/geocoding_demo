@@ -13,6 +13,9 @@
             src: "{{ config_file }}.j2"
             dest: "{{ config_file }}"
 
+        - name: Run unit tests
+          command: python -m unittest tests
+
         - name: Build docker image
           docker_image:
             name: geocoding/demo

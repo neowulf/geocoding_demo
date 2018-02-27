@@ -20,48 +20,58 @@
 1. [Geocoding Service by HERE](https://developer.here.com/documentation/geocoder/topics/quick-start.html)
 1. [Geocoding Service by Google](https://developers.google.com/maps/documentation/geocoding/start##Design)
 
-## How To Run
+## Build and Deployment
 
-### Sample Invocation
+1. Setup the conda environment:
+```bash
+conda env create -f conda_environment.yml
+source activate geocoding_demo
+```
+1. Build the docker image.
+```bash
+ansible-playbook --ask-vault-pass playbook.yml
+```
+1. The docker image would be created if the unit tests succeed without any failure.
+1. Run the docker image.
+```bash
+docker run -d -p 8000:8000 geocoding/demo
+```
+1. The server should be running in the background. 
+1. Execute the following to test the http server:
+```bash
+./tests.sh http://localhost:8000
+```
+
+## Usage
+
+1. The following query parameters need to be provided:
+    1. `latlng=latitude,longitude`
+    1. `provider` can be either `google` or `here`.
+
+### Google Provider:
 
 ```bash
 curl 'localhost:8000/reverse_geocode?latlng=41.8842,-87.6388&provider=google' -v
 ```
 
-### Running the Tests
+### Here Provider:
 
-Setup the conda environment
 ```bash
-conda env create -f conda_environment.yml
-source activate geocoding_demo
+curl 'localhost:8000/reverse_geocode?latlng=41.8842,-87.6388&provider=here' -v
 ```
 
-To run the unit tests:
+
+### Running the Tests
+
+1. Run the unit tests:
 ```bash
 python -m unittest tests
 ```
 
-To run the api tests:
+1. Run the http server tests:
 ```bash
-python driver.py
-./tests.sh
+./tests.sh http://localhost:8000
 ```
-
-### Deployment Steps
-
-```bash
-ansible-playbook --ask-vault-pass playbook.yml
-docker run -d -p 8000:8000 geocoding/demo
-./tests.sh localhost:8000
-
-# docker container ls -a -q | xargs docker container rm -f
-# docker image rmi 1acbaaf91df3 2475ca1dcbac
-```
-
-## Design
-
-1. Use strategy pattern to switch between the various Geocoding Services.
-1. If an exception occurs when invoking the requested API, fallback to the default API.
 
 ## Assumptions
 
@@ -70,9 +80,10 @@ docker run -d -p 8000:8000 geocoding/demo
     1. docker
     1. bash
     1. curl
-1. Google provider is the fallback provider.
-1. Google api - provides the first found `street_address`.
-1. Here api - provides the first found `houseNumber`.
-1. `config.ini.template` is a template file which will eventually reside as `config.ini`. where the real secrets need 
+1. Google provider is the fallback provider. This could have been extracted into the `config.ini`.
+1. Google api - provides the first `street_address` match.
+1. Here api - provides the first `houseNumber` match.
+1. `config.ini.j2` is a jinja file which will eventually reside as `config.ini` where the real secrets need 
     to be filled for the different providers. 
-    1. `ansible` stores the actual `config.ini` as a secret file.
+    1. `ansible` provides the `config.ini` when building the docker image.
+    1. If the `config.ini` is missing or incorrect - the docker image won't be built due to failing tests.
