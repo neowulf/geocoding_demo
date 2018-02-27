@@ -1,4 +1,4 @@
-name: geocoding_demoing
+name: geocoding_demo
 channels:
   - conda-forge
   - defaults
@@ -6,5 +6,5 @@ dependencies:
   - python=3.6.4=0
   - pip:
     - ansible==2.4.3.0
-    - docker-py=1.10.6
+    - docker-py==1.10.6
 

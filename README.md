@@ -22,6 +22,18 @@
 
 ## Build and Deployment
 
+1. [Optional Step] - Run the following steps within the vagrant instance.
+```bash
+vagrant plugin install vagrant-vbguest
+vagrant up
+vagrant ssh
+
+# FIXME make the following two sentences part of the Vagrantfile
+bash miniconda.sh -b || exit 1;
+PATH="${HOME}/miniconda3/bin:$PATH"
+
+cd /vagrant
+```
 1. Setup the conda environment:
 ```bash
 conda env create -f conda_environment.yml
@@ -80,6 +92,7 @@ python -m unittest tests
     1. docker
     1. bash
     1. curl
+    1. jq
 1. Google provider is the fallback provider. This could have been extracted into the `config.ini`.
 1. Google api - provides the first `street_address` match.
 1. Here api - provides the first `houseNumber` match.
